@@ -1,7 +1,7 @@
 require 'rspec'
 require './gilded_rose.rb'
 
-describe GildedRose do
+Rspec.describe GildedRose do
 
   describe "#update_quality" do
 
