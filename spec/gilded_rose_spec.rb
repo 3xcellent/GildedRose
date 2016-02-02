@@ -121,8 +121,8 @@ RSpec.describe GildedRose do
         end
 
         context 'medium close to sell date (lower bound)' do
-          let(:initial_sell_in) { 6 }
-          it { expect(item.quality).to eq(initial_quality + 2) }
+          let(:initial_sell_in) { 5 }
+          it { expect(item.quality).to eq(initial_quality + 3) }
 
           context 'at max quality' do
             let(:initial_quality) { 50 }
