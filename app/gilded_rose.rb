@@ -3,15 +3,15 @@ require_relative './item.rb'
 class GildedRose
   @items = []
 
-  def update_items(items)
-    @items = items
-
-    items.each do |item|
-      update_quality item
+  def update_quality(items)
+    @items = items.map do |item|
+      ItemUpdater.update(item)
     end
   end
+end
 
-  def update_quality(item)
+class ItemUpdater
+  def self.update(item)
     if item.name != 'Aged Brie' && item.name != 'Backstage passes to a TAFKAL80ETC concert'
       if item.quality > 0
         if item.name != 'Sulfuras, Hand of Ragnaros'
@@ -55,5 +55,7 @@ class GildedRose
         item.quality = item.quality + 1 if item.quality < 50
       end
     end
+    item
   end
 end
+

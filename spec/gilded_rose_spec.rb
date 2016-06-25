@@ -8,7 +8,7 @@ RSpec.describe GildedRose do
       let(:initial_quality) { 10 }
       let(:item) { Item.new(name, initial_sell_in, initial_quality) }
 
-      before { subject.update_quality(item) }
+      before { subject.update_quality([item]) }
 
       context 'normal item' do
         let(:name) { 'NORMAL ITEM' }
@@ -207,7 +207,7 @@ RSpec.describe GildedRose do
         ]
       end
 
-      before { subject.update_items(items) }
+      before { subject.update_quality(items) }
 
       it { expect(items[0].quality).to eq(9) }
       it { expect(items[0].sell_in).to eq(4) }
