@@ -14,26 +14,17 @@ class ItemUpdater
   def self.update(item)
     return item if item.name == 'Sulfuras, Hand of Ragnaros'
     return self.backstage_pass(item) if item.name == 'Backstage passes to a TAFKAL80ETC concert'
+    return self.aged_brie(item) if item.name == 'Aged Brie'
 
-    if item.name != 'Aged Brie'
-      if item.quality > 0
-        item.quality = item.quality - 1
-      end
-    else
-      if item.quality < 50
-        item.quality = item.quality + 1
-      end
+    if item.quality > 0
+      item.quality = item.quality - 1
     end
 
     item.sell_in = item.sell_in - 1
 
     if item.sell_in < 0
-      if item.name != 'Aged Brie'
-        if item.quality > 0
-          item.quality = item.quality - 1
-        end
-      else
-        item.quality = item.quality + 1 if item.quality < 50
+      if item.quality > 0
+        item.quality = item.quality - 1
       end
     end
 
@@ -63,5 +54,14 @@ class ItemUpdater
 
     item
   end
+
+  def self.aged_brie(item)
+    if item.quality < 50
+      item.quality = item.quality + 1
+    end
+    item.sell_in = item.sell_in - 1
+    item.quality = item.quality + 1 if item.quality < 50 if item.sell_in < 0
+  end
+
 end
 
