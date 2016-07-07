@@ -16,35 +16,12 @@ class ItemUpdater
     when 'Sulfuras, Hand of Ragnaros'
       item
     when 'Backstage passes to a TAFKAL80ETC concert'
-      self.backstage_pass(item)
+      BackstagePass.new(item).age
     when 'Aged Brie'
       AgedBrie.new(item).age
     else
       NormalItem.new(item).age
     end
-  end
-
-  def self.backstage_pass(item)
-    if item.quality < 50
-      item.quality = item.quality + 1
-      if item.name == 'Backstage passes to a TAFKAL80ETC concert'
-        if item.sell_in < 11
-          if item.quality < 50
-            item.quality = item.quality + 1
-          end
-        end
-        if item.sell_in < 6
-          if item.quality < 50
-            item.quality = item.quality + 1
-          end
-        end
-      end
-    end
-
-    item.sell_in = item.sell_in - 1
-    item.quality = item.quality - item.quality if item.sell_in < 0
-
-    item
   end
 
   class NormalItem
@@ -56,8 +33,8 @@ class ItemUpdater
 
     def age
       item.tap do |i|
-        i.sell_in = item.sell_in - 1
         i.quality = item_quality
+        i.sell_in = item.sell_in - 1
       end
     end
 
@@ -66,13 +43,31 @@ class ItemUpdater
     end
 
     def new_quality
-      item.quality + (item.sell_in < 0 ? -2 : -1)
+      item.quality + change_in_quality
+    end
+
+    def change_in_quality
+      (item.sell_in <= 0 ? -2 : -1)
     end
   end
 
   class AgedBrie < NormalItem
-    def new_quality
-      item.quality + (item.sell_in < 0 ? 2 : 1)
+    def change_in_quality
+      (item.sell_in <= 0 ? 2 : 1)
+    end
+  end
+
+  class BackstagePass < NormalItem
+    def change_in_quality
+      if item.sell_in <= 0
+        item.quality * -1
+      elsif (1..5).include? item.sell_in
+        3
+      elsif (6..10).include? item.sell_in
+        2
+      else
+        1
+      end
     end
   end
 end
