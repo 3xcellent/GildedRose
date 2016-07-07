@@ -18,7 +18,7 @@ class ItemUpdater
     when 'Backstage passes to a TAFKAL80ETC concert'
       self.backstage_pass(item)
     when 'Aged Brie'
-      self.aged_brie(item)
+      AgedBrie.new(item).age
     else
       NormalItem.new(item).age
     end
@@ -47,14 +47,6 @@ class ItemUpdater
     item
   end
 
-  def self.aged_brie(item)
-    if item.quality < 50
-      item.quality = item.quality + 1
-    end
-    item.sell_in = item.sell_in - 1
-    item.quality = item.quality + 1 if item.quality < 50 if item.sell_in < 0
-  end
-
   class NormalItem
     attr_reader :item
 
@@ -70,7 +62,7 @@ class ItemUpdater
     end
 
     def item_quality
-      [0, new_quality].max
+      [0, [50, new_quality].min].max
     end
 
     def new_quality
@@ -78,5 +70,10 @@ class ItemUpdater
     end
   end
 
+  class AgedBrie < NormalItem
+    def new_quality
+      item.quality + (item.sell_in < 0 ? 2 : 1)
+    end
+  end
 end
 
