@@ -63,19 +63,18 @@ class ItemUpdater
     end
 
     def age
-      if item.quality > 0
-        item.quality = item.quality - 1
+      item.tap do |i|
+        i.sell_in = item.sell_in - 1
+        i.quality = item_quality
       end
+    end
 
-      item.sell_in = item.sell_in - 1
+    def item_quality
+      [0, new_quality].max
+    end
 
-      if item.sell_in < 0
-        if item.quality > 0
-          item.quality = item.quality - 1
-        end
-      end
-
-      item
+    def new_quality
+      item.quality + (item.sell_in < 0 ? -2 : -1)
     end
   end
 
