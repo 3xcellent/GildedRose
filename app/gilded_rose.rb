@@ -5,25 +5,30 @@ class GildedRose
 
   def update_quality(items)
     @items = items.map do |item|
-      ItemUpdater.update(item)
+      ItemUpdater.new(item).update
     end
   end
 end
 
 class ItemUpdater
-  def self.update(item)
-    case item.name
-    when 'Sulfuras, Hand of Ragnaros'
-      item
-    when 'Backstage passes to a TAFKAL80ETC concert'
-      BackstagePass.new(item).age
-    when 'Aged Brie'
-      AgedBrie.new(item).age
-    when 'Conjured Mana Cake'
-      ConjuredItem.new(item).age
-    else
-      NormalItem.new(item).age
-    end
+  attr_reader :item
+
+  def initialize(item)
+    @item = item
+  end
+
+  def update
+    updater = item_updaters[item.name] || NormalItem
+    updater.new(item).age
+  end
+
+  def item_updaters
+    {
+      'Sulfuras, Hand of Ragnaros' => Sulfuras,
+      'Backstage passes to a TAFKAL80ETC concert' => BackstagePass,
+      'Aged Brie' => AgedBrie,
+      'Conjured Mana Cake' => ConjuredItem
+    }
   end
 
   class NormalItem
@@ -50,6 +55,12 @@ class ItemUpdater
 
     def change_in_quality
       item.sell_in <= 0 ? -2 : -1
+    end
+  end
+
+  class Sulfuras < NormalItem
+    def age
+      item
     end
   end
 
@@ -83,4 +94,3 @@ class ItemUpdater
     end
   end
 end
-
