@@ -162,7 +162,6 @@ RSpec.describe GildedRose do
       end
 
       context 'conjured item' do
-        before { skip 'Waiting implementation' }
         let(:name) { 'Conjured Mana Cake' }
 
         it { expect(item.sell_in).to eq(initial_sell_in - 1) }

@@ -19,6 +19,8 @@ class ItemUpdater
       BackstagePass.new(item).age
     when 'Aged Brie'
       AgedBrie.new(item).age
+    when 'Conjured Mana Cake'
+      ConjuredItem.new(item).age
     else
       NormalItem.new(item).age
     end
@@ -47,13 +49,13 @@ class ItemUpdater
     end
 
     def change_in_quality
-      (item.sell_in <= 0 ? -2 : -1)
+      item.sell_in <= 0 ? -2 : -1
     end
   end
 
   class AgedBrie < NormalItem
     def change_in_quality
-      (item.sell_in <= 0 ? 2 : 1)
+      item.sell_in <= 0 ? 2 : 1
     end
   end
 
@@ -67,6 +69,16 @@ class ItemUpdater
         2
       else
         1
+      end
+    end
+  end
+
+  class ConjuredItem < NormalItem
+    def change_in_quality
+      if item.sell_in <= 0
+        -4
+      else
+        -2
       end
     end
   end
