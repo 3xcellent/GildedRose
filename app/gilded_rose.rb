@@ -12,23 +12,16 @@ end
 
 class ItemUpdater
   def self.update(item)
-    return item if item.name == 'Sulfuras, Hand of Ragnaros'
-    return self.backstage_pass(item) if item.name == 'Backstage passes to a TAFKAL80ETC concert'
-    return self.aged_brie(item) if item.name == 'Aged Brie'
-
-    if item.quality > 0
-      item.quality = item.quality - 1
+    case item.name
+    when 'Sulfuras, Hand of Ragnaros'
+      item
+    when 'Backstage passes to a TAFKAL80ETC concert'
+      self.backstage_pass(item)
+    when 'Aged Brie'
+      self.aged_brie(item)
+    else
+      NormalItem.new(item).age
     end
-
-    item.sell_in = item.sell_in - 1
-
-    if item.sell_in < 0
-      if item.quality > 0
-        item.quality = item.quality - 1
-      end
-    end
-
-    item
   end
 
   def self.backstage_pass(item)
@@ -49,7 +42,6 @@ class ItemUpdater
     end
 
     item.sell_in = item.sell_in - 1
-
     item.quality = item.quality - item.quality if item.sell_in < 0
 
     item
@@ -61,6 +53,30 @@ class ItemUpdater
     end
     item.sell_in = item.sell_in - 1
     item.quality = item.quality + 1 if item.quality < 50 if item.sell_in < 0
+  end
+
+  class NormalItem
+    attr_reader :item
+
+    def initialize(item)
+      @item = item
+    end
+
+    def age
+      if item.quality > 0
+        item.quality = item.quality - 1
+      end
+
+      item.sell_in = item.sell_in - 1
+
+      if item.sell_in < 0
+        if item.quality > 0
+          item.quality = item.quality - 1
+        end
+      end
+
+      item
+    end
   end
 
 end
